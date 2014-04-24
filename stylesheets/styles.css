@@ -1,5 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Arvo:400,700,400italic);
 
+
+
 /* MeyerWeb Reset */
 
 html, body, div, span, applet, object, iframe,
@@ -21,6 +23,8 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+
+
 
 
 /* Base text styles */
@@ -208,7 +212,7 @@ header {
 	background-color: #171717;
 	color: #FDFDFB;
   width:170px;
-  float:left;
+  float:top;
   position:fixed;
 	border: 1px solid #000;
 	-webkit-border-top-right-radius: 4px;
