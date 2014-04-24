@@ -1,0 +1,105 @@
+<html>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Thepythongamebook by horstjens</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <!--<link rel="stylesheet" href="stylesheets/pygment_trac.css">-->
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper" style="padding:10px;">
+      <!--<header>
+        <h1 class="header">The Python Game Book</h1>
+        <p class="header">code examples for <a href="http://ThePythonGameBook.com">The Python Game Book</a></p>
+        <hr>
+        <h1 class="header">Goblin Dice Tutorial</h1>
+        <ul>
+            <li><a href="index.html">top (start page)</a></li>
+            <li>previous: --</li>
+            <li>now: goblindice001</li>
+            <li>next: goblindice002</li>
+        </ul>
+        <hr>
+        <ul>
+          <li><a class="buttons github" href="https://github.com/horstjens/ThePythonGameBook">Download</a></li>
+        </ul>
+
+        <p class="header">contact: <a class="header name" href="https://github.com/horstjens">Horst JENS</a></p>
+
+
+      </header>
+      <section> -->
+    
+			
+
+<h3>
+<a name="goblindice001" class="anchor" href="#goblindice001"><span class="octicon octicon-link"></span></a>Goblin Dice Tutorial, step 001</h3>
+
+<p>First code example: Grunty the goblin vs. the wooden testdummy</p>
+
+<p></p>Imagine a young goblin named "Grunty". He dreams of being a fearsome warrior one day. However, at the moment, he is rather unskilled and barely capable of handling a weapon. Grunty goes to the training place and fight a wooden testdummy to train his fighting skills. </p>
+
+<p>Handling a weapon is no easy task, and Grunty will, despite his best efforts, not always land a blow. Sometimes he will miss.</p>
+
+<p>How Grunty looks is not the focus of this tutorial (yet). For this first example let us create some game (combat) mechanics using the <a href="http://python.org">Python</a> programming language.</p>
+
+<p>Let us assume that Grunty has a low basic chance of hitting the testdummy while swinging his weapon, like only 3 hits for every ten strikes. This can be written as a fraction: 3/10 or 0.3 or 30% - that's a bit less than every third strike.</p>
+<p>But not every strike is the same for Grunty. Sometimes he has luck and performs a perfect attack, sometimes not. To reflect this variety, let us add some luck on top his base chance, like a random number between Zero and One. <br>
+
+The formula for Gruntys attack is therefore: <pre>attack value = base attack + random float value</pre>
+<br>
+Float means a decimal number. Note that the resulting attack value can be larger then 1, everytime when the random value is larger than 0.7. The attack value can never be smaller than 0.3 for Grunty.</p>
+
+<br>
+
+<p>Grunty is fighting against a wooden, unmovable testdummy. The testdummy is easy to hit: 9 times out of 10 an attacker can calculate to land an hit on the testdummy. Let us describe this value as base defense value for the testdummy ()1/10 or 0.1), and add to that an random float value between 0 and 1:<br>
+<pre>defense value = base defense + random float value</pre><br>
+</p>
+<p>The combat runs in several combat rounds:<br>
+Each round, the computer calculates the attack and defense values (using his random generator) and compares those two. If the attacking value is greater than the defending value, Grunty managed a hit on the testdummy. But how much damage did he inflict ? The damage is calculated seperately, by a random number bewteen 1 and 10: <br>
+<pre>damage = random integer value</pre><br>
+Integer means whole numbers, without decimal point. </p>
+
+<p>The damage is then substracted from the "Hitpoints" (also an integer number) of the testdummy, and the whole process is reapeated until the testdummy has no hitpoints left.</p>
+
+<p>The fresh, undamaged testdummy must start with an given number of hitpoints, say 200 hiptoints. Also it is interesting to know how many combat rounds Grunty needs to destroy the testdummy, so a combat round counter is needed and set to 0 (you will soon see why) before the game.</p>
+<p>If you have read the instructions above you have basically read a program (that is a set of instructions) and you could now simulate Gruntys combat performance by using those instructions, paper and pen to keep track of combat rounds and hitpoints, and an random generator for whole numbers (dice) and an random generator for float values (like touching a ruler with a pen behind your back and reading the value of where the pen touched - or by simply making the numbers up.)</p>
+<p>
+To let a computer do this task instead, a set of commands and concepts is necessary:
+<ul>
+<li>Variables: numbers that can have different values over time, like the testdummys hitpoints or the round counter</li>
+<li>Operators to compare two variables</li>
+<li>Control structures:</li>
+<ul><li>a Conditional ("if") statement to decide what to do if the attack value is greater than the defense value</li>
+<li>a Loop to repeat the whole process as long as necessary</li>
+</ul>
+<li>Some random generators</li>
+</p>
+
+</p>
+
+
+
+
+<p>sourcecode:<br>
+<script src="https://gist.github.com/horstjens/11267180.js?file=goblindice001.py"></script>
+
+<!-- </section>
+<footer>
+<p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+</footer>
+</div> -->
+<!--[if !IE]><script>fixScale(document);</script><![endif]--> 
+</div>		
+</body>
+
+
+</html>
