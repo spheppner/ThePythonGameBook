@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Goblin vs. testdummy</title>
+    
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="goblindice_start.html" title="Goblin dice tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ThePythonGameBook 0.4 documentation</a> &raquo;</li>
+          <li><a href="goblindice_start.html" accesskey="U">Goblin dice tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="goblin-vs-testdummy">
+<h1>Goblin vs. testdummy</h1>
+<div class="section" id="about">
+<h2>about</h2>
+<p>This page shows how to formulate an idea (combat calculation) as a series of instructions and code it using python3.</p>
+</div>
+<div class="section" id="idea">
+<h2>idea</h2>
+<div class="figure align-right">
+<a class="reference internal image-reference" href="_images/goblindice001.png"><img alt="Flow Chart for goblindice001" src="_images/goblindice001.png" style="height: 800px;" /></a>
+</div>
+<p>Imagine a young goblin named &#8220;Grunty&#8221;. He dreams of being a fearsome warrior one day. However, at the moment, he is rather unskilled and barely capable of handling a weapon. Grunty goes to the training place fighting against a wooden testdummy.</p>
+<p>Handling a weapon is no easy task, and Grunty will, despite his best efforts, not always land a blow. Sometimes he will miss.</p>
+<p>Independent of the graphical representation (there is none yet), some combat mechanics must be formulated so that the computer can emulate a fight.</p>
+<p>Let us assume that -like a <tt class="docutils literal"><span class="pre">pen</span> <span class="pre">&amp;</span> <span class="pre">paper</span></tt> role player- Grunty has a low basic chance of hitting the testdummy while swinging his weapon. We express that as a low integer (whole) like  3. A more skilled warrior would have an higher attack value. A line of python code saying just that would look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">grunty_base_attack</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>The part left of the equal sign is called a <tt class="docutils literal"><span class="pre">variable</span></tt> (because some time in the future hopefully Gruntys attack value will increase) and the part right from the equal sign is called a value. In this case, an <tt class="docutils literal"><span class="pre">integer</span></tt> value because we use whole numbers (no decimal point). Decimal numbers (like 0.3) are called <tt class="docutils literal"><span class="pre">float</span></tt> values. Note that in python, variable names can not include a space (python would think those are two different commands) and therefore an underscore <tt class="docutils literal"><span class="pre">_</span></tt> is used. It is also possible to use <em class="xref std std-term">camelCase</em> like:  <tt class="docutils literal"><span class="pre">gruntyAttack</span></tt> instead. By convention, all variable names begin with a lowercase character.</p>
+<p>But not every strike is the same for Grunty. Sometimes he has luck and performs a perfect attack, sometimes not. To reflect this variety, let us add some random values on top his base chance, to reflect the actual luck / skill / performance / difficulty of combat. To calculate the outcome of one single attack in a combat situation, some random value is added to the base attack value. In pen &amp; paper role playing games, the player has usually to throw two dice and add the number of eyes rolled to the base attack value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">attack_value</span> <span class="o">=</span> <span class="n">grunty_base_attack</span> <span class="o">+</span> <span class="n">random_integer_value</span>
+</pre></div>
+</div>
+<p>The resulting attack_value is now hopefully greater than the base attack value. Let it compare to a similar calculated defense value to see if Grunty scored a hit.</p>
+<p>Grunty is fighting against a wooden, unmovable testdummy. The testdummy is very easy to hit: We give it a extreme low defense value of 1, reflecting instrinct defense abilitys like diffictult-to-hit geometry and shape.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">base_defense</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>In actual combat, sometimes even an heap of wood can get lucky... not by actual moving, but maybe the sun is in his rear, blending the attacker, maybe the wind and the rain work in his favor. So to calcualte actual combat performance, let us add some random value on top of the (low) base defense value, but less than for the attacker. Let&#8217;s say only rolling one die is allowed to roll and added to the base defense.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">defense_value</span> <span class="o">=</span> <span class="n">base_defense</span> <span class="o">+</span> <span class="n">random_integer_value</span>
+</pre></div>
+</div>
+<p>The combat runs in several combat rounds:
+In each combat round, the computer calculates the attack and defense values (using his random generator functions) and compares those two. If the attacking value is greater than the defending value, Grunty managed a hit on the testdummy. If both values are equal, Grunty manages a &#8220;glancing blow&#8221;, a hit that does no damage. If the attack value is greater than the defense value, damage is calculated as an random number between 0 and 10. With dice, this could be calculated by rolling 2 dice and subtracting 2 from the sum of eyes.</p>
+<p>The damage is then substracted from the &#8220;Hitpoints&#8221; (also an integer number) of the testdummy, and the whole process is reapeated until the testdummy has no hitpoints left.</p>
+<p>The fresh, undamaged testdummy must start with an given number of hitpoints, say 200 hiptoints. Also it is interesting to know how many combat rounds Grunty needs to destroy the testdummy, so a combat round counter is needed and set to 0 (you will soon see why) before the game.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">testudmmy_hitpoints</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">combat_round_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>If you have read the instructions above you have basically read a program (that is a set of instructions) and you could now simulate Gruntys combat performance by using those instructions, a pair of dice and paper and pen to keep track of combat rounds and hitpoints.</p>
+<p>To let a computer do this task instead, a set of commands and concepts is necessary:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><em class="xref std std-term">Variables</em>: numbers that can have different values over time, like the testdummys hitpoints or the round counter</p>
+</li>
+<li><p class="first"><em class="xref std std-term">Operators</em> to compare two variables</p>
+</li>
+<li><p class="first"><em class="xref std std-term">Control structures</em>:</p>
+<blockquote>
+<div><ul class="simple">
+<li>a <em class="xref std std-term">Conditional</em> <tt class="docutils literal"><span class="pre">if</span></tt> statement to decide what to do if the attack value is greater than the defense value</li>
+<li>a <em class="xref std std-term">Loop</em> to repeat the whole process as long as necessary</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Some random generator <em class="xref std std-term">functions</em></p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="code">
+<h1>Code</h1>
+<div class="section" id="prerequesites">
+<h2>prerequesites</h2>
+<blockquote>
+<div><ul class="simple">
+<li>necessary:<ul>
+<li>python3 installed</li>
+<li>text editor can save python files ( like <cite>goblindice001.py</cite>)</li>
+<li>python3 interpreter can launch saved python file.</li>
+</ul>
+</li>
+<li>recommended:<ul>
+<li>python-friendly IDE like IDLE, Geany etc.</li>
+<li>ability to read and type (blind typing) using the 10 finger system, instead of copy and paste</li>
+<li>python shell to lookup commands</li>
+<li>executing python with filename as parameter from the command line <cite>python3 goblindice001.py</cite>)</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="source-code">
+<h2>source code</h2>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre></div></td><td class="code"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Name:             goblindice001.py </span>
+
+<span class="sd">Purpose:          teaching basic python: while, if, elif, else, +=</span>
+<span class="sd">idea:             simple combat sim of one goblin against a test dummy</span>
+<span class="sd">edit this code:   https://github.com/horstjens/ThePythonGameBook/</span>
+<span class="sd">                  blob/master/python/goblindice/goblindice001.py</span>
+<span class="sd">edit tutorial:    https://github.com/horstjens/ThePythonGameBook/</span>
+<span class="sd">                  blob/master/goblindice001.rst                  </span>
+<span class="sd">main project:     http://ThePythonGameBook.com</span>
+<span class="sd">Author:           Horst JENS, horst.jens@spielend-programmieren.at</span>
+<span class="sd">Licence:          gpl, see http://www.gnu.org/licenses/gpl.html</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span> 
+ 
+<span class="c"># Grunty, the untrained goblin, has some attack skill</span>
+<span class="n">grunty_attack</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c"># integer value </span>
+ 
+<span class="c"># the wooden, unmovable testdummy has poor defense, but many hitpoints</span>
+<span class="n">testdummy_hitpoints</span> <span class="o">=</span> <span class="mi">200</span> <span class="c"># integer value</span>
+<span class="n">testdummy_defense</span> <span class="o">=</span> <span class="mi">1</span>
+ 
+<span class="n">logfile</span> <span class="o">=</span> <span class="s">&quot; Grunty vs. the wooden testdummy&quot;</span>   <span class="c"># string</span>
+<span class="n">combatround</span> <span class="o">=</span> <span class="mi">0</span> 
+ 
+<span class="k">while</span> <span class="n">testdummy_hitpoints</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">combatround</span> <span class="o">+=</span> <span class="mi">1</span>        <span class="c"># the same as: combatround = combatround +1</span>
+    <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">*** Round: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">combatround</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; ***&quot;</span> <span class="c"># \n new line</span>
+    <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;, target has {} hitpoints&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">testdummy_hitpoints</span><span class="p">)</span>
+    <span class="n">attack</span><span class="o">=</span> <span class="n">grunty_attack</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">+</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">defense</span> <span class="o">=</span> <span class="n">testdummy_defense</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="c"># roll one die</span>
+    <span class="k">if</span> <span class="n">attack</span> <span class="o">&gt;</span> <span class="n">defense</span><span class="p">:</span> <span class="c"># did Grunty hit the testdummy ?</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Smack! Grunty hits his target with a most &quot;</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;skilled attack: {} &gt; {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attack</span><span class="p">,</span> <span class="n">defense</span><span class="p">)</span>
+        <span class="n">damage</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">+</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span> <span class="c"># 0-10 damage</span>
+        <span class="n">testdummy_hitpoints</span> <span class="o">-=</span> <span class="n">damage</span>   <span class="c"># subtract damage from hitpoints</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">...and inflicts {} damage!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">damage</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">attack</span> <span class="o">==</span> <span class="n">defense</span><span class="p">:</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Grunty manages to nearly hit the target, but &quot;</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;he makes no damage {0} = {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attack</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> Oh no! Grunty does not even hit his target &quot;</span>
+        <span class="n">logfile</span> <span class="o">+=</span>  <span class="s">&quot;{} &lt; {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attack</span><span class="p">,</span> <span class="n">defense</span><span class="p">)</span>
+<span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot;- &quot;</span> <span class="o">*</span> <span class="mi">20</span> <span class="c"># make a dashed line by multiplying a string</span>
+<span class="n">logfile</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Victory for Grunty after {} rounds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">combatround</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="output">
+<h2>output</h2>
+<p>Some example output:</p>
+<div class="highlight-python"><div class="highlight"><pre>*** Round: 22 ***, target has 104 hitpoints
+ Oh no! Grunty does not even hit his target 5 &lt; 9
+*** Round: 23 ***, target has 104 hitpoints
+Grunty manages to nearly hit the target, but he makes no damage 9 = 9
+*** Round: 24 ***, target has 104 hitpoints
+Smack! Grunty hits his target with a most skilled attack: 6 &gt; 4
+...and inflicts 2 damage!
+*** Round: 25 ***, target has 102 hitpoints
+Oh no! Grunty does not even hit his target 6 &lt; 9
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-discussion">
+<h2>code discussion</h2>
+<p>Some elements in this code may need explaining:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="8%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">line number</th>
+<th class="head">term</th>
+<th class="head">explanation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1 - 13</td>
+<td><a class="reference external" href="http://docs.python.org/glossary.html#term-docstring" title="(in Python v2.7)"><em class="xref std std-term">docstring</em></a><span class="link-target"> [http://docs.python.org/glossary.html#term-docstring]</span></td>
+<td>Some multi-line text <em class="xref std std-term">string</em> insinde triple-quotes <tt class="docutils literal"><span class="pre">&quot;&quot;&quot;</span></tt>. If a docstring is the first statement in a file it is automatically stored in the gloabel variable <tt class="docutils literal"><span class="pre">__doc__</span></tt>. Docstrings are interpreted by python as something interested for humans only, like a <em class="xref std std-term">comment</em>. Docstrings are not necessary, but nice to have.</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td><tt class="docutils literal"><span class="pre">import</span> <span class="pre">random</span></tt></td>
+<td>To make use of any <em class="xref std std-term">functon</em> in pythons random module, it is necessary to import this module first. Later in this code functions of the random module will use the prefix <tt class="docutils literal"><span class="pre">random.</span></tt>.</td>
+</tr>
+<tr class="row-even"><td>16</td>
+<td><tt class="docutils literal"><span class="pre">comment</span></tt></td>
+<td>Everything behind a <tt class="docutils literal"><span class="pre">#</span></tt> sign in python is a comment. Comments are useful for human eyes only and always ignored by Python.</td>
+</tr>
+<tr class="row-odd"><td>17</td>
+<td><tt class="docutils literal"><span class="pre">assign</span></tt>, <tt class="docutils literal"><span class="pre">inline</span> <span class="pre">comment</span></tt></td>
+<td>The value of 3 is assigned to the variable <tt class="docutils literal"><span class="pre">grunty_attack</span></tt>. (You best read it from right to left).  Note that the part right from the <tt class="docutils literal"><span class="pre">#</span></tt> sign is also a comment.</td>
+</tr>
+<tr class="row-even"><td>26</td>
+<td><tt class="docutils literal"><span class="pre">loop</span></tt>, <tt class="docutils literal"><span class="pre">expresssion</span></tt></td>
+<td>The <tt class="docutils literal"><span class="pre">while</span></tt> <tt class="docutils literal"><span class="pre">keyword</span></tt> indicates, together with the colon at the end of this line, the beginning of an <tt class="docutils literal"><span class="pre">indented</span> <span class="pre">code</span> <span class="pre">block</span></tt>. This code block is reapeated as long as the <tt class="docutils literal"><span class="pre">expression``right</span> <span class="pre">from</span> <span class="pre">``while``remains</span> <span class="pre">``True</span></tt>.</td>
+</tr>
+<tr class="row-odd"><td>27</td>
+<td><tt class="docutils literal"><span class="pre">increment</span></tt></td>
+<td>The value of the the <tt class="docutils literal"><span class="pre">variable</span></tt> <tt class="docutils literal"><span class="pre">combatround</span></tt> is incremented by 1. Because this is made even before some combat values are calculated, <tt class="docutils literal"><span class="pre">combatround</span></tt> was set to 0 before the while loop.</td>
+</tr>
+<tr class="row-even"><td>28</td>
+<td><tt class="docutils literal"><span class="pre">strings</span> <span class="pre">and</span> <span class="pre">numbers</span></tt></td>
+<td>Another textstring is appended to the textstring variable <tt class="docutils literal"><span class="pre">logfile</span></tt>. The starting new line sign (<tt class="docutils literal"><span class="pre">\n</span></tt>) is a so called <tt class="docutils literal"><span class="pre">escaped</span> <span class="pre">character</span></tt>. Because <tt class="docutils literal"><span class="pre">combatround</span></tt> is of type integer, it can <em>not</em> be appended to the textstring <tt class="docutils literal"><span class="pre">logfile</span></tt>. Therefore, &#8216;&#8217;combatround&#8217;&#8217; must first be converted into a string using the <tt class="docutils literal"><span class="pre">str()</span></tt> function.</td>
+</tr>
+<tr class="row-odd"><td>29</td>
+<td><tt class="docutils literal"><span class="pre">format</span> <span class="pre">mini</span> <span class="pre">language</span></tt></td>
+<td>Using Format String Syntax instead of the <tt class="docutils literal"><span class="pre">str</span></tt> function, the curly brackets are replaced by python with the expression inside the round brackets of <tt class="docutils literal"><span class="pre">.format()</span></tt>. See <a class="reference external" href="https://docs.python.org/2/library/string.html">https://docs.python.org/2/library/string.html</a></td>
+</tr>
+<tr class="row-even"><td>30</td>
+<td><tt class="docutils literal"><span class="pre">random.randint()</span></tt></td>
+<td>The <tt class="docutils literal"><span class="pre">random.randint()</span></tt> function generates a (nearly) random integer between (including) the first (lower) and the second (higher) number in the round brackets. Writing instead <tt class="docutils literal"><span class="pre">random.randint(1,6)*2</span></tt> or <tt class="docutils literal"><span class="pre">random.randint(2,12)</span></tt> would be similar, but not the same. See next page for more on this topic.</td>
+</tr>
+<tr class="row-odd"><td>32</td>
+<td><tt class="docutils literal"><span class="pre">conditional</span></tt>, <tt class="docutils literal"><span class="pre">if</span></tt></td>
+<td>Like the <tt class="docutils literal"><span class="pre">while</span></tt> keyword, the <tt class="docutils literal"><span class="pre">if</span></tt> keyword need an expression and a colon and is followed by an <tt class="docutils literal"><span class="pre">idented</span> <span class="pre">code</span> <span class="pre">block</span></tt>. This code block will only be executed if the  <tt class="docutils literal"><span class="pre">expression</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>. Note that you can write an inline-comment after the colon with the <tt class="docutils literal"><span class="pre">#</span></tt> sign. For python, the comment is ignored and the line ends with the colon.</td>
+</tr>
+<tr class="row-even"><td>33 - 34</td>
+<td><tt class="docutils literal"><span class="pre">strings</span></tt></td>
+<td>Note that the string in line 33 ends with an space and the string in line 34 does not begin with a new line. In fact, line 33 and line 34 can be written in lone (very long) line. In this case, two seperate lines were written for layout reasons, to make no code line longer than 72 characters. See <a class="reference external" href="http://legacy.python.org/dev/peps/pep-0008/">http://legacy.python.org/dev/peps/pep-0008/</a></td>
+</tr>
+<tr class="row-odd"><td>34</td>
+<td><tt class="docutils literal"><span class="pre">format</span> <span class="pre">mini</span> <span class="pre">language</span></tt></td>
+<td>The first pair of curly brackets get replaced by the first value inside <tt class="docutils literal"><span class="pre">.format()</span></tt>, the second pair of curly brackets get replaced by the second value inside <tt class="docutils literal"><span class="pre">.format()</span></tt> and so on.</td>
+</tr>
+<tr class="row-even"><td>35</td>
+<td><tt class="docutils literal"><span class="pre">random.randint())</span></tt></td>
+<td>Here, <a href="#id1"><span class="problematic" id="id2">``</span></a>random.randint(2,12) could have be used instead, and would have resulted similar, bot not exact the same distribution of random values as this formular. See next page for more details.</td>
+</tr>
+<tr class="row-odd"><td>36</td>
+<td><tt class="docutils literal"><span class="pre">decrement</span></tt></td>
+<td>Like the increment, this line could have been written as: <tt class="docutils literal"><span class="pre">testdummy_hitpoints</span> <span class="pre">-=</span> <span class="pre">testdummy_hitpoints</span> <span class="pre">-</span> <span class="pre">damage</span></tt>. But why type more than necessary?</td>
+</tr>
+</tbody>
+</table>
+<p>pause</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="8%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">line number</th>
+<th class="head">term</th>
+<th class="head">explanation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>38</td>
+<td><tt class="docutils literal"><span class="pre">elif</span></tt></td>
+<td>Each <tt class="docutils literal"><span class="pre">if</span></tt> code block can have many (including none) <tt class="docutils literal"><span class="pre">elif</span></tt> code blocks. Like the <tt class="docutils literal"><span class="pre">if</span></tt> keyword, the <tt class="docutils literal"><span class="pre">indented</span> <span class="pre">code</span> <span class="pre">block</span></tt> after elif will only be executed if the <tt class="docutils literal"><span class="pre">expression</span></tt> was False for all previous <tt class="docutils literal"><span class="pre">elif</span></tt> expressions as well as for the initial <tt class="docutils literal"><span class="pre">if</span></tt> and only if the actual expression (right of <tt class="docutils literal"><span class="pre">elif</span></tt>) is <tt class="docutils literal"><span class="pre">True</span></tt>.</td>
+</tr>
+<tr class="row-odd"><td>38</td>
+<td><tt class="docutils literal"><span class="pre">equal</span> <span class="pre">test</span></tt></td>
+<td>Please note that the <cite>==</cite> operator is used to <em>test for equality</em>. The <cite>=</cite> operator assigns values.</td>
+</tr>
+<tr class="row-even"><td>40</td>
+<td><tt class="docutils literal"><span class="pre">format</span> <span class="pre">mini</span> <span class="pre">language</span></tt></td>
+<td>A special trick using <tt class="docutils literal"><span class="pre">.format()</span></tt>: When you have one variable at several places inside a string, like in this case, you can use their number inside the curly bracket. Python always start counting with 0, so the first variable in the round brackets is referred as <tt class="docutils literal"><span class="pre">{0}</span></tt>, the second variable as <tt class="docutils literal"><span class="pre">{1}</span></tt> and so on.</td>
+</tr>
+<tr class="row-odd"><td>41</td>
+<td><tt class="docutils literal"><span class="pre">else</span></tt></td>
+<td>If the <tt class="docutils literal"><span class="pre">if</span></tt> and all <tt class="docutils literal"><span class="pre">elif</span></tt> expressions are <tt class="docutils literal"><span class="pre">False</span></tt>, the <tt class="docutils literal"><span class="pre">idented</span> <span class="pre">code</span> <span class="pre">block</span></tt> behind the <tt class="docutils literal"><span class="pre">else:</span></tt> keyword is executed. The <tt class="docutils literal"><span class="pre">else:</span></tt> keyword itself is optional and need no expression behind it.</td>
+</tr>
+<tr class="row-even"><td>44</td>
+<td><tt class="docutils literal"><span class="pre">indentation</span></tt></td>
+<td>This line is <em>outside</em> the <tt class="docutils literal"><span class="pre">while</span> <span class="pre">block</span></tt> ! Take a close look at the previous line with the same indentation: It&#8217;s line 26. That means that this line will only executed if the expression in line 26 becomes <tt class="docutils literal"><span class="pre">False</span></tt></td>
+</tr>
+<tr class="row-odd"><td>46</td>
+<td><tt class="docutils literal"><span class="pre">empty</span> <span class="pre">line</span></tt></td>
+<td>There is no specific reason to let this line empty: it&#8217;s just to have the code pretty layouted. Python ignores empty lines.</td>
+</tr>
+<tr class="row-even"><td>47</td>
+<td><tt class="docutils literal"><span class="pre">print()</span></tt></td>
+<td>The <tt class="docutils literal"><span class="pre">print()</span></tt> keyword can output any variable to the screen. Note that since python version 3, <tt class="docutils literal"><span class="pre">print</span></tt> need round brackets.</td>
+</tr>
+</tbody>
+</table>
+<p>next page: functions !</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+    <table border="0" align="center">
+    <tr>
+    <td>
+           Last updated on Apr 27, 2014.
+           Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2. 
+    </td>
+    <td><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0; padding:2px" src="http://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a></td>
+    <td>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a><br>Please contact and link to <a href="http://spielend-programmieren.at">Horst JENS</a> or <a href="http://ThePythonGameBook.com">ThePythonGameBook</a> when you copy it.</td>
+    </tr>        
+    </table>
+    </div>
+  </body>
+</html>
